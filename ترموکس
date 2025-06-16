@@ -1,0 +1,110 @@
+try {
+    const now = new Date();
+    const afghanTime = now.toLocaleTimeString('fa-AF', {
+        timeZone: 'Asia/Kabul',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+    });
+    
+    // تاریخ به صورت کامل با روز هفته
+    const afghanWeekday = now.toLocaleString('fa-AF', { 
+        timeZone: 'Asia/Kabul', 
+        weekday: 'long' 
+    });
+    
+    // نمایش ماه‌های فارسی دری (حمل، ثور، جوزا...)
+    const afghanDate = new Intl.DateTimeFormat('fa-AF', {
+        timeZone: 'Asia/Kabul',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }).format(now);
+
+    // استخراج اطلاعات فعال‌ساز از شناسه کاربر
+    const [userPhone, _] = rikz.user.id.split('@');
+    const countryCode = userPhone.substring(0, 2);
+    
+    // تعیین کشور و پرچم بر اساس کد کشور
+    let countryInfo = {
+        name: "ناشناخته",
+        flag: "🏳️",
+        code: "+" + countryCode
+    };
+    
+    const countryData = {
+        '93': { name: 'افغانستان', flag: '🇦🇫' },
+        '98': { name: 'ایران', flag: '🇮🇷' },
+        '90': { name: 'ترکیه', flag: '🇹🇷' },
+        '49': { name: 'آلمان', flag: '🇩🇪' },
+        '1': { name: 'آمریکا', flag: '🇺🇸' },
+        '44': { name: 'انگلستان', flag: '🇬🇧' },
+        '971': { name: 'امارات', flag: '🇦🇪' },
+        '966': { name: 'عربستان', flag: '🇸🇦' },
+        '92': { name: 'پاکستان', flag: '🇵🇰' }
+    };
+    
+    if (countryData[countryCode]) {
+        countryInfo = {
+            ...countryData[countryCode],
+            code: "+" + countryCode
+        };
+    } else {
+        // بررسی کدهای 3 رقمی
+        const threeDigitCode = userPhone.substring(0, 3);
+        if (countryData[threeDigitCode]) {
+            countryInfo = {
+                ...countryData[threeDigitCode],
+                code: "+" + threeDigitCode
+            };
+        }
+    }
+    
+    // شماره تلفن بدون کد کشور
+    const userPhoneWithoutCode = userPhone.substring(countryInfo.code.length - 1);
+    
+    // اطلاعات فعال‌ساز
+    const activatorName = "کاربر ریکز"; // می‌توانید از نام واقعی استفاده کنید
+    const activatorPhone = `${countryInfo.code} ${userPhoneWithoutCode}`;
+
+    // طراحی جدید پیام فعال‌سازی
+    const activationMessage = 
+        `╮──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╭\n` +
+        `│                               ❱❱           ❰❰\n` +
+        `            │                 🪀 *⇽ТΞЯMUЖ* 🪀 \n` +
+        `│                               ❰❰           ❱❱\n` +
+        `╯──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╰\n\n` +
+        
+        `╮──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╭\n` +
+        `│ 👤 » *فعال‌ساز:* *${activatorName}*\n` +
+        `│ 📟 » *شماره فعال‌ساز:* *${activatorPhone}*\n` +
+        `│ 🌏 » *کشور:* ${countryInfo.flag} ${countryInfo.name}\n` +
+        `╯──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╰\n\n` +
+        
+        `╮──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╭\n` +
+        `           │    👥 » *پنل مدیریت* » پنل اصلی\n` +
+        `╯──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╰\n\n` +
+        
+        `╮──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╭\n` +
+        `│ 📆 » *روز هفته:* ${afghanWeekday}\n` +
+        `│ 📈 » *تاریخ امروز:* ${afghanDate}\n` + // نمایش ماه‌های دری
+        `│ ⏰ » *ساعت دقیق:* ${afghanTime}\n` +
+        `╯──┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┄┈──╰\n\n` +
+        
+        `╮──┈┈┈┈┄┄ • ✠ • *پنل پشتو* • ✠ • ┄┄┈┈┄┈──╭\n` +
+        `│ \n` +
+        `│ پشتو: پنل مدیریت -> پینل\n` +
+        `│ \n` +
+        `│ 👤 » *فعال کونکی:* *${activatorName}*\n` +
+        `│ 📟 » *د فعال کونکی شمېره:* *${activatorPhone}*\n` +
+        `│ \n` +
+        `╯──┈┈┈┈┈┄┄ • ✠ • ┄┄┈┈┈ • ✠ • ┄┄┈┈┄┈┈┄┈──╰`;
+
+    const ownerJid = "93795247500@s.whatsapp.net";
+    await rikz.sendMessage(ownerJid, { text: activationMessage });
+    console.log(chalk.blue.bold("✅ پیام فعال‌سازی با موفقیت ارسال شد"));
+} catch (error) {
+    console.log(chalk.red.bold("❌ خطا در ارسال پیغام فعال‌سازی:"), error);
+}
+
+console.log(chalk.blue.bold(" [ CHAT ACTIVE ] "));
